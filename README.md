@@ -21,6 +21,7 @@ examples type-check under the Swift 6 toolchain).
 | `list_patterns` | Browse the catalog, optionally filtered by category (Creational / Structural / Behavioral). |
 | `get_pattern` | Full reference for one pattern — intent, problem, solution, applicability, participants, conceptual + real-world Swift examples, pros/cons, related patterns. Accepts an id (`abstract-factory`) or name (`Abstract Factory`). |
 | `recommend_pattern` | Describe a design problem in plain words; get ranked candidate patterns with the matched cues. |
+| `get_project_conventions` | Read the current project's architecture & conventions file so advice matches *your* codebase, not generic defaults. |
 
 ### Skill & command
 
@@ -30,6 +31,17 @@ examples type-check under the Swift 6 toolchain).
 - **`/pattern <name-or-problem>`** — quick lookup or recommendation on demand.
   - `/pattern Strategy` → full reference + Swift example
   - `/pattern I have a giant switch selecting between behaviors` → recommendations
+- **`/swift-conventions [init]`** — view or scaffold the project's conventions
+  file so the plugin follows *your* architecture (see below).
+
+### Make it match your architecture
+
+The catalog is universal (GoF), but every project's architecture, idioms, and
+custom patterns differ. Declare them once in `.claude/swift-architecture.md`
+(run `/swift-conventions init`) and the plugin reads and **honors them over its
+generic defaults** — MVVM-C, VIPER, TCA, Clean, banned patterns, your own
+abstractions, whatever your team uses. See
+[docs/conventions.md](docs/conventions.md).
 
 ## Install
 

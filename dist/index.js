@@ -21008,7 +21008,7 @@ var EMPTY_COMPLETION_RESULT = {
 };
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
-import process from "node:process";
+import process2 from "node:process";
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
 var ReadBuffer = class {
@@ -21040,7 +21040,7 @@ function serializeMessage(message) {
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 var StdioServerTransport = class {
-  constructor(_stdin = process.stdin, _stdout = process.stdout) {
+  constructor(_stdin = process2.stdin, _stdout = process2.stdout) {
     this._stdin = _stdin;
     this._stdout = _stdout;
     this._readBuffer = new ReadBuffer();
@@ -21098,6 +21098,10 @@ var StdioServerTransport = class {
     });
   }
 };
+
+// src/index.ts
+import { readFileSync, existsSync } from "node:fs";
+import { join, isAbsolute } from "node:path";
 
 // src/patterns/abstract-factory.ts
 var abstractFactory = {
@@ -24834,10 +24838,93 @@ function recommend(patterns2, query, limit) {
   return scored.filter((r) => r.score > 0).sort((a, b) => b.score - a.score || a.pattern.name.localeCompare(b.pattern.name)).slice(0, limit);
 }
 
+// src/conventions.ts
+var CONVENTIONS_FILES = [
+  ".claude/swift-architecture.md",
+  ".claude/swift-conventions.md",
+  "ARCHITECTURE.md"
+];
+var CONVENTIONS_TEMPLATE = `# Swift Architecture & Conventions
+
+> Read by the \`swift-design-patterns\` plugin. Claude consults this file before
+> proposing or implementing a pattern, and follows what it says here over its
+> generic defaults. Delete the guidance comments and fill in your project's
+> reality. Keep it short and specific.
+
+## Architecture
+
+- **Style:** <!-- e.g. MVVM-C, VIPER, TCA, Clean/Onion, MVC, custom -->
+- **Overview:** <!-- one paragraph: the layers and how data/control flows -->
+
+## Layers & boundaries
+
+<!-- The layers (e.g. Presentation / Domain / Data) and the rules for what may
+depend on what. Name the rule that must never be broken. -->
+
+## Dependency management
+
+- **Injection style:** <!-- initializer injection / a DI container / property wrappers / ... -->
+- **Composition root:** <!-- where dependencies are assembled -->
+- **Banned:** <!-- e.g. "no global singletons except AppEnvironment" -->
+
+## Concurrency & state
+
+<!-- async/await vs Combine vs callbacks? Where is state owned? Threading rules,
+@MainActor usage, how observers are notified. -->
+
+## Naming conventions
+
+<!-- Suffixes (ViewModel, Service, Repository, UseCase, Coordinator),
+protocol naming, file/module layout. -->
+
+## Module / target structure
+
+<!-- Swift packages / targets and their responsibilities, if modularized. -->
+
+## Preferred patterns
+
+<!-- Which patterns this team reaches for, and the local shape they take.
+e.g. "Strategy via protocol + initializer injection", "Coordinator for all
+navigation". Reference catalog ids where useful. -->
+
+## Discouraged / banned patterns
+
+<!-- e.g. "no Singleton for stateful services", "no inheritance for view models" -->
+
+## Team-specific patterns & idioms
+
+<!-- YOUR OWN reusable patterns the shared catalog doesn't cover: delegation
+rules, your Coordinator/Router contract, your Repository shape, DI conventions,
+result-builder DSLs, custom abstractions. Include a tiny canonical Swift snippet
+for each so Claude matches your house style. THIS is where project-specific
+"patterns" live. -->
+
+## Examples / references
+
+<!-- Links to exemplar files in this repo Claude should imitate. -->
+`;
+function conventionsHeader(path) {
+  return `# Project conventions (from \`${path}\`)
+
+Follow these over generic pattern defaults. Reconcile any pattern you propose with what is stated here.
+
+---
+
+`;
+}
+function noConventionsMessage(projectDir) {
+  return `No conventions file found in this project (looked for: ${CONVENTIONS_FILES.join(", ")} under ${projectDir}).
+
+Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice match this team's architecture and idioms, create one \u2014 run \`/swift-conventions init\` or save the template below to \`.claude/swift-architecture.md\`:
+
+\`\`\`markdown
+` + CONVENTIONS_TEMPLATE + "\n```\n";
+}
+
 // src/index.ts
 var server = new McpServer({
   name: "swift-design-patterns",
-  version: "0.1.0"
+  version: "0.2.0"
 });
 var CATALOG_SUMMARY = `Catalog of ${patterns.length} GoF design patterns with idiomatic Swift examples.`;
 server.registerTool(
@@ -24930,6 +25017,38 @@ Call get_pattern with a pattern id for the full reference and Swift example.`
         }
       ]
     };
+  }
+);
+function resolveProjectDir() {
+  const dir = process.env.CLAUDE_PROJECT_DIR;
+  if (dir && isAbsolute(dir)) return dir;
+  return process.cwd();
+}
+server.registerTool(
+  "get_project_conventions",
+  {
+    title: "Get this project's Swift conventions",
+    description: "Read the current project's architecture & conventions file (e.g. .claude/swift-architecture.md) so pattern advice matches the team's chosen architecture, idioms, and custom patterns. ALWAYS call this before proposing or implementing a pattern in a real project, and follow what it says over generic defaults. With action='template', returns a blank template the team can fill in.",
+    inputSchema: {
+      action: external_exports.enum(["view", "template"]).optional().describe("'view' (default) reads the project's conventions; 'template' returns a blank starter.")
+    }
+  },
+  async ({ action }) => {
+    if (action === "template") {
+      return { content: [{ type: "text", text: CONVENTIONS_TEMPLATE }] };
+    }
+    const projectDir = resolveProjectDir();
+    for (const rel of CONVENTIONS_FILES) {
+      const full = join(projectDir, rel);
+      if (existsSync(full)) {
+        try {
+          const body = readFileSync(full, "utf8");
+          return { content: [{ type: "text", text: conventionsHeader(rel) + body }] };
+        } catch {
+        }
+      }
+    }
+    return { content: [{ type: "text", text: noConventionsMessage(projectDir) }] };
   }
 );
 var transport = new StdioServerTransport();

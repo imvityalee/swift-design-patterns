@@ -18,6 +18,10 @@ are verified against the Swift 6 toolchain and stay consistent.
 
 ## Tools
 
+- **`get_project_conventions`** — read the current project's architecture &
+  conventions (`.claude/swift-architecture.md`). Call this **first** when
+  working in a real project; it tells you the team's architecture, idioms, and
+  custom patterns. With `action: "template"` it returns a blank starter.
 - **`recommend_pattern`** — give it a free-text description of the design
   problem ("a huge switch picks between behaviors", "add responsibilities
   without subclassing", "one place must stay in sync with many views") and it
@@ -31,6 +35,14 @@ are verified against the Swift 6 toolchain and stay consistent.
 
 ## How to work
 
+0. **Honor the project's conventions first.** When working inside a real
+   project, call `get_project_conventions` before anything else. If a
+   conventions file exists, treat it as authoritative: use the team's
+   architecture, layering rules, DI style, naming, and any team-specific or
+   banned patterns — *over* the generic catalog. If a pattern you'd suggest
+   conflicts with the conventions (e.g. they ban Singletons), follow the
+   conventions and say so. If no file exists, proceed with framework-neutral
+   defaults and you may offer to scaffold one (`/swift-conventions init`).
 1. **Choosing a pattern.** When the user describes a symptom rather than naming
    a pattern, call `recommend_pattern` first, then `get_pattern` on the top
    candidate to confirm fit before proposing it. Briefly say *why* it fits and

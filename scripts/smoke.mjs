@@ -24,8 +24,11 @@ const assert = (cond, msg) => {
 const tools = await client.listTools();
 const names = tools.tools.map((t) => t.name).sort();
 console.log("tools:", names.join(", "));
-assert(names.length === 3, "exposes 3 tools");
-assert(["get_pattern", "list_patterns", "recommend_pattern"].every((n) => names.includes(n)), "tool names present");
+assert(names.length === 4, "exposes 4 tools");
+assert(
+  ["get_pattern", "get_project_conventions", "list_patterns", "recommend_pattern"].every((n) => names.includes(n)),
+  "tool names present",
+);
 
 const list = await client.callTool({ name: "list_patterns", arguments: {} });
 const listText = list.content[0].text;
@@ -53,6 +56,12 @@ assert(/strategy/i.test(recText), "recommend surfaces Strategy for the algorithm
 
 const rec2 = await client.callTool({ name: "recommend_pattern", arguments: { problem: "add responsibilities to an object dynamically without subclassing" } });
 assert(/decorator/i.test(rec2.content[0].text), "recommend surfaces Decorator for add-responsibilities problem");
+
+const tmpl = await client.callTool({ name: "get_project_conventions", arguments: { action: "template" } });
+assert(/Swift Architecture & Conventions/.test(tmpl.content[0].text), "conventions template returns the starter");
+
+const conv = await client.callTool({ name: "get_project_conventions", arguments: {} });
+assert(/conventions/i.test(conv.content[0].text), "get_project_conventions view returns text (file or not-found+template)");
 
 await client.close();
 console.log(failures === 0 ? "\nALL SMOKE CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);

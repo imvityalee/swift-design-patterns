@@ -2,12 +2,20 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { readFileSync, existsSync } from "node:fs";
+import { join, isAbsolute } from "node:path";
 import { patterns, byId, categories } from "./catalog.js";
 import { renderPattern, recommend } from "./format.js";
+import {
+  CONVENTIONS_FILES,
+  CONVENTIONS_TEMPLATE,
+  conventionsHeader,
+  noConventionsMessage,
+} from "./conventions.js";
 
 const server = new McpServer({
   name: "swift-design-patterns",
-  version: "0.1.0",
+  version: "0.2.0",
 });
 
 const CATALOG_SUMMARY = `Catalog of ${patterns.length} GoF design patterns with idiomatic Swift examples.`;
@@ -137,6 +145,50 @@ server.registerTool(
         },
       ],
     };
+  },
+);
+
+// --- get_project_conventions -----------------------------------------------
+function resolveProjectDir(): string {
+  const dir = process.env.CLAUDE_PROJECT_DIR;
+  if (dir && isAbsolute(dir)) return dir;
+  return process.cwd();
+}
+
+server.registerTool(
+  "get_project_conventions",
+  {
+    title: "Get this project's Swift conventions",
+    description:
+      "Read the current project's architecture & conventions file (e.g. " +
+      ".claude/swift-architecture.md) so pattern advice matches the team's chosen " +
+      "architecture, idioms, and custom patterns. ALWAYS call this before proposing or " +
+      "implementing a pattern in a real project, and follow what it says over generic " +
+      "defaults. With action='template', returns a blank template the team can fill in.",
+    inputSchema: {
+      action: z
+        .enum(["view", "template"])
+        .optional()
+        .describe("'view' (default) reads the project's conventions; 'template' returns a blank starter."),
+    },
+  },
+  async ({ action }) => {
+    if (action === "template") {
+      return { content: [{ type: "text", text: CONVENTIONS_TEMPLATE }] };
+    }
+    const projectDir = resolveProjectDir();
+    for (const rel of CONVENTIONS_FILES) {
+      const full = join(projectDir, rel);
+      if (existsSync(full)) {
+        try {
+          const body = readFileSync(full, "utf8");
+          return { content: [{ type: "text", text: conventionsHeader(rel) + body }] };
+        } catch {
+          // fall through to the next candidate / not-found message
+        }
+      }
+    }
+    return { content: [{ type: "text", text: noConventionsMessage(projectDir) }] };
   },
 );
 
