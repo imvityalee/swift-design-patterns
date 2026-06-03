@@ -1,0 +1,21 @@
+{
+  "name": "swift-design-patterns-marketplace",
+  "owner": {
+    "name": "Viktor Li"
+  },
+  "plugins": [
+    {
+      "name": "swift-design-patterns",
+      "displayName": "Swift Design Patterns",
+      "description": "Catalog, idiomatic Swift examples, and recommendation tools for the 23 GoF design patterns.",
+      "version": "0.1.0",
+      "author": "Viktor Li",
+      "license": "MIT",
+      "keywords": ["swift", "design-patterns", "gof", "ios", "architecture"],
+      "source": {
+        "type": "github",
+        "url": "https://github.com/imvityalee/swift-design-patterns"
+      }
+    }
+  ]
+}
