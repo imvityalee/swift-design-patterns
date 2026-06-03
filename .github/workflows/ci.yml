@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    # macOS runner so we can type-check the Swift examples with the system toolchain.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck (TypeScript)
+        run: npm run typecheck
+
+      - name: Build bundle
+        run: npm run build
+
+      - name: Verify committed dist/ is up to date
+        run: |
+          if ! git diff --exit-code -- dist/; then
+            echo "::error::dist/ is stale. Run 'npm run build' and commit the result."
+            exit 1
+          fi
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Smoke test (MCP server over stdio)
+        run: npm run smoke
+
+      - name: Type-check all Swift examples
+        shell: bash
+        run: |
+          swift --version
+          npx esbuild scripts/dump-swift.ts --bundle --platform=node --format=esm --target=node18 --outfile=/tmp/dump.mjs
+          node /tmp/dump.mjs /tmp/sdp-swift
+          fail=0
+          for f in /tmp/sdp-swift/*.swift; do
+            if ! swiftc -typecheck "$f" 2>/tmp/swifterr; then
+              echo "::error file=$f::Swift type-check failed"
+              cat /tmp/swifterr
+              fail=1
+            fi
+          done
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+          echo "All Swift examples type-checked."

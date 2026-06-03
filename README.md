@@ -1,5 +1,7 @@
 # Swift Design Patterns — Claude Code plugin
 
+[![CI](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml)
+
 A [Claude Code](https://code.claude.com) plugin that makes Claude fluent in the
 **23 Gang-of-Four design patterns in Swift**. It bundles:
 
@@ -43,6 +45,12 @@ or run `/pattern …`. The MCP server is bundled (single self-contained
 `dist/index.js`); you only need Node.js available, which Claude Code already
 requires.
 
+### Use it across a team
+
+To auto-enable the plugin for everyone working in a shared project (no manual
+install), commit a snippet into that project's `.claude/settings.json`. See
+[docs/team-setup.md](docs/team-setup.md).
+
 ## The 23 patterns
 
 **Creational** — Abstract Factory, Builder, Factory Method, Prototype, Singleton
@@ -53,11 +61,17 @@ Mediator, Memento, Observer, State, Strategy, Template Method, Visitor
 ## Local development
 
 ```bash
-npm install        # install dev deps (SDK, esbuild, typescript)
+npm install        # install dev deps (SDK, esbuild, typescript, tsx)
 npm run typecheck  # tsc --noEmit
+npm test           # unit tests: catalog integrity + recommender
 npm run build      # bundle src/ -> dist/index.js (committed, so the plugin runs without node_modules)
 npm run smoke      # spin up the server over stdio and exercise every tool
 ```
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of the
+above on every push/PR, type-checks all 46 Swift examples with the Swift
+toolchain, and fails if the committed `dist/` is stale. See
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 The catalog lives in `src/patterns/<id>.ts`, one file per pattern, each
 satisfying the `Pattern` interface in `src/types.ts`. Add or edit a pattern,

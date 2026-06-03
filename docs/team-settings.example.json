@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "swift-design-patterns": {
+      "source": {
+        "source": "github",
+        "repo": "imvityalee/swift-design-patterns"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "swift-design-patterns@swift-design-patterns": true
+  }
+}

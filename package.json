@@ -8,6 +8,7 @@
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node18 --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --outfile=dist/index.js",
     "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/catalog.test.ts test/recommend.test.ts",
     "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@types/node": "^20.19.41",
     "esbuild": "^0.24.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }
 }
