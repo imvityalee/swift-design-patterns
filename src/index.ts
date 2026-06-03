@@ -15,7 +15,7 @@ import {
 
 const server = new McpServer({
   name: "swift-design-patterns",
-  version: "0.2.0",
+  version: "0.2.1",
 });
 
 const CATALOG_SUMMARY = `Catalog of ${patterns.length} GoF design patterns with idiomatic Swift examples.`;

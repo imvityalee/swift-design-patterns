@@ -24924,7 +24924,7 @@ Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice
 // src/index.ts
 var server = new McpServer({
   name: "swift-design-patterns",
-  version: "0.2.0"
+  version: "0.2.1"
 });
 var CATALOG_SUMMARY = `Catalog of ${patterns.length} GoF design patterns with idiomatic Swift examples.`;
 server.registerTool(

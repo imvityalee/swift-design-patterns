@@ -9,8 +9,10 @@
       "source": "./",
       "displayName": "Swift Design Patterns",
       "description": "Catalog, idiomatic Swift examples, and recommendation tools for the 23 GoF design patterns.",
-      "version": "0.2.0",
-      "author": "Viktor Li",
+      "version": "0.2.1",
+      "author": {
+        "name": "Viktor Li"
+      },
       "license": "MIT",
       "keywords": ["swift", "design-patterns", "gof", "ios", "architecture"]
     }

@@ -1,6 +1,6 @@
 {
   "name": "swift-design-patterns-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP server exposing a catalog of GoF design patterns with idiomatic Swift examples and recommendation tools.",
   "license": "MIT",
   "type": "module",
