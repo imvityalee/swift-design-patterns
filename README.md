@@ -47,8 +47,14 @@ abstractions, whatever your team uses. See
 
 In Claude Code:
 
+Install Market place 
+
 ```text
 /plugin marketplace add imvityalee/swift-design-patterns
+```
+Install Skill 
+
+```text
 /plugin install swift-design-patterns
 ```
 
