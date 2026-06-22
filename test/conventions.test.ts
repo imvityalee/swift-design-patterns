@@ -7,9 +7,13 @@ import {
   noConventionsMessage,
 } from "../src/conventions.js";
 
-test("candidate file list is non-empty and prioritises .claude/", () => {
+test("candidate file list prioritises the harness-neutral root path", () => {
   assert.ok(CONVENTIONS_FILES.length >= 1);
-  assert.equal(CONVENTIONS_FILES[0], ".claude/swift-architecture.md");
+  assert.equal(CONVENTIONS_FILES[0], ".swift-architecture.md");
+});
+
+test("candidate file list keeps the .claude/ path for back-compat", () => {
+  assert.ok(CONVENTIONS_FILES.includes(".claude/swift-architecture.md"));
 });
 
 test("template covers the key sections", () => {
@@ -31,4 +35,8 @@ test("not-found message embeds the template and the project dir", () => {
   const msg = noConventionsMessage("/tmp/proj");
   assert.ok(msg.includes("/tmp/proj"));
   assert.ok(msg.includes("Swift Architecture & Conventions"));
+  assert.ok(
+    msg.includes(".swift-architecture.md"),
+    "should suggest the harness-neutral path, not a Claude-only one",
+  );
 });

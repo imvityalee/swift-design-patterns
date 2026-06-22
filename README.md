@@ -1,8 +1,10 @@
-# Swift Design Patterns — Claude Code plugin
+# Swift Design Patterns — for Claude Code & Codex
 
 [![CI](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml)
 
-A [Claude Code](https://code.claude.com) plugin that makes Claude fluent in the
+A [Claude Code](https://code.claude.com) plugin — also installable as an
+[OpenAI Codex](https://github.com/openai/codex) MCP server (see
+[Use with Codex](#use-with-codex)) — that makes your coding agent fluent in the
 **23 Gang-of-Four design patterns in Swift**. It bundles:
 
 - 🧰 an **MCP server** exposing the pattern catalog as tools, and
@@ -68,6 +70,44 @@ requires.
 To auto-enable the plugin for everyone working in a shared project (no manual
 install), commit a snippet into that project's `.claude/settings.json`. See
 [docs/team-setup.md](docs/team-setup.md).
+
+## Use with Codex
+
+The same MCP server runs under [OpenAI Codex](https://github.com/openai/codex) —
+both the CLI and the IDE extension, which share `~/.codex/config.toml`, so one
+setup covers both. Codex has no plugin marketplace, so you wire it up directly:
+
+**1. Register the MCP server (required — this is the tools).** One command:
+
+```bash
+codex mcp add swift-design-patterns -- npx -y swift-design-patterns-mcp
+```
+
+It writes an `[mcp_servers.swift-design-patterns]` block into
+`~/.codex/config.toml`. Prefer editing the file by hand? Copy the block from
+[`codex/config.example.toml`](codex/config.example.toml). Either way, all four
+tools (`list_patterns`, `get_pattern`, `recommend_pattern`,
+`get_project_conventions`) become available in Codex. You only need Node.js on
+your `PATH` (for `npx`).
+
+**2. Add the slash commands (optional).** Copy the prompt files into your Codex
+prompts directory to get `/pattern` and `/swift-conventions`:
+
+```bash
+mkdir -p ~/.codex/prompts
+cp codex/prompts/pattern.md codex/prompts/swift-conventions.md ~/.codex/prompts/
+```
+
+**3. Make Codex reach for the tools automatically (optional).** Codex has no
+auto-invoked skill like Claude Code, so paste the block from
+[`codex/AGENTS.snippet.md`](codex/AGENTS.snippet.md) into your project's
+`AGENTS.md` (or `~/.codex/AGENTS.md`) — it nudges Codex to prefer these tools
+when working on Swift patterns.
+
+> **Conventions file:** under Codex, save your project conventions to
+> `.swift-architecture.md` at the repo root (`/swift-conventions init` creates
+> it). The server still reads the legacy `.claude/swift-architecture.md`, so
+> existing Claude projects keep working unchanged.
 
 ## The 23 patterns
 
