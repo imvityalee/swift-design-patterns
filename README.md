@@ -113,10 +113,10 @@ tools for you. Just ask naturally — "which pattern fits a giant switch over
 behaviors?", "compare Strategy and State", "refactor this toward a pattern" —
 Codex skills don't take slash-command arguments.
 
-> **Conventions file:** save your project conventions to `.swift-architecture.md`
-> at the repo root. The server still reads the legacy
-> `.claude/swift-architecture.md`, so existing Claude projects keep working
-> unchanged.
+> **Conventions file:** under Codex, save your project conventions to
+> `.swift-architecture.md` at the repo root. The server also reads
+> `.claude/swift-architecture.md` (Claude's location), so the same conventions
+> work across both tools.
 
 ## The 23 patterns
 

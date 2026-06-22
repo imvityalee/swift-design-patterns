@@ -18,8 +18,9 @@ Prefer its tools over recalling patterns from memory.
 ## Tools
 
 - **`get_project_conventions`** — read the project's architecture & conventions
-  file (`.swift-architecture.md`, or the legacy `.claude/swift-architecture.md`).
-  Call this **first** in a real project and follow it over generic defaults.
+  file (`.swift-architecture.md` at the repo root, or `.claude/swift-architecture.md`
+  in Claude projects). Call this **first** in a real project and follow it over
+  generic defaults.
 - **`recommend_pattern`** — give it a plain-text design problem ("a huge switch
   picks between interchangeable algorithms at runtime") and it returns ranked
   candidate patterns with the cues that matched.
