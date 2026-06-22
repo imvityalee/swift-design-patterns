@@ -25,14 +25,19 @@ examples type-check under the Swift 6 toolchain).
 | `recommend_pattern` | Describe a design problem in plain words; get ranked candidate patterns with the matched cues. |
 | `get_project_conventions` | Read the current project's architecture & conventions file so advice matches *your* codebase, not generic defaults. |
 
-### Skill & command
+### Skill & commands
 
 - The **`swift-design-patterns` skill** auto-invokes when you're choosing,
   implementing, refactoring toward, or explaining a pattern in Swift — and it
   drives the MCP tools for you.
-- **`/pattern <name-or-problem>`** — quick lookup or recommendation on demand.
-  - `/pattern Strategy` → full reference + Swift example
-  - `/pattern I have a giant switch selecting between behaviors` → recommendations
+- **`/pattern <name-or-problem>`** — quick lookup or recommendation on demand
+  (`/pattern Strategy`, or `/pattern I have a giant switch selecting between behaviors`).
+- **`/recommend-pattern <problem>`** — ranked pattern suggestions for a described problem.
+- **`/refactor-to-pattern <code or smell>`** — refactor Swift code toward a fitting
+  pattern, honoring your conventions.
+- **`/list-patterns [category]`** — browse the catalog, optionally by Creational /
+  Structural / Behavioral.
+- **`/compare-patterns <A> vs <B>`** — compare two patterns and when to pick which.
 - **`/swift-conventions [init]`** — view or scaffold the project's conventions
   file so the plugin follows *your* architecture (see below).
 
@@ -90,24 +95,28 @@ tools (`list_patterns`, `get_pattern`, `recommend_pattern`,
 `get_project_conventions`) become available in Codex. You only need Node.js on
 your `PATH` (for `npx`).
 
-**2. Add the slash commands (optional).** Copy the prompt files into your Codex
-prompts directory to get `/pattern` and `/swift-conventions`:
+**2. Add the skill (optional, recommended).** Codex's equivalent of Claude's
+auto-invoked skill is an [Agent Skill](https://developers.openai.com/codex/skills).
+Copy the bundled skill into a directory Codex scans:
 
 ```bash
-mkdir -p ~/.codex/prompts
-cp codex/prompts/pattern.md codex/prompts/swift-conventions.md ~/.codex/prompts/
+# this project only (repo-local, auto-discovered, wins precedence):
+mkdir -p .agents/skills && cp -R codex/skills/swift-design-patterns .agents/skills/
+
+# …or for all your projects (global):
+mkdir -p ~/.agents/skills && cp -R codex/skills/swift-design-patterns ~/.agents/skills/
 ```
 
-**3. Make Codex reach for the tools automatically (optional).** Codex has no
-auto-invoked skill like Claude Code, so paste the block from
-[`codex/AGENTS.snippet.md`](codex/AGENTS.snippet.md) into your project's
-`AGENTS.md` (or `~/.codex/AGENTS.md`) — it nudges Codex to prefer these tools
-when working on Swift patterns.
+Codex then auto-selects the skill when you work on Swift design patterns (or you
+pick it via `/skills` or `$swift-design-patterns`), and it drives the four MCP
+tools for you. Just ask naturally — "which pattern fits a giant switch over
+behaviors?", "compare Strategy and State", "refactor this toward a pattern" —
+Codex skills don't take slash-command arguments.
 
 > **Conventions file:** under Codex, save your project conventions to
-> `.swift-architecture.md` at the repo root (`/swift-conventions init` creates
-> it). The server still reads the legacy `.claude/swift-architecture.md`, so
-> existing Claude projects keep working unchanged.
+> `.swift-architecture.md` at the repo root. The server also reads
+> `.claude/swift-architecture.md` (Claude's location), so the same conventions
+> work across both tools.
 
 ## The 23 patterns
 
