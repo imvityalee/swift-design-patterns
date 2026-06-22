@@ -43,7 +43,7 @@ release instead, point the marketplace source at a tag:
       "source": {
         "source": "github",
         "repo": "imvityalee/swift-design-patterns",
-        "ref": "v0.3.0"
+        "ref": "v0.4.0"
       }
     }
   },
