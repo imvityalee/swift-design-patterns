@@ -4,6 +4,7 @@ description: >-
   full reference and idiomatic Swift example; with a problem description,
   recommends fitting patterns. Usage: /pattern Strategy  or  /pattern I have a
   giant switch selecting between behaviors
+argument-hint: "[pattern name OR a design problem]"
 ---
 
 The user invoked `/pattern` with: **$ARGUMENTS**
