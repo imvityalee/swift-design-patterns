@@ -1,15 +1,26 @@
 {
   "name": "swift-design-patterns-mcp",
-  "version": "0.2.1",
-  "description": "MCP server exposing a catalog of GoF design patterns with idiomatic Swift examples and recommendation tools.",
+  "version": "0.3.0",
+  "description": "MCP server exposing a catalog of GoF design patterns with idiomatic Swift examples and recommendation tools. Works with Claude Code and OpenAI Codex.",
   "license": "MIT",
+  "author": "Viktor Li",
+  "homepage": "https://github.com/imvityalee/swift-design-patterns",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imvityalee/swift-design-patterns.git"
+  },
+  "keywords": ["swift", "design-patterns", "gof", "ios", "architecture", "mcp", "codex", "claude"],
   "type": "module",
-  "private": true,
+  "bin": {
+    "swift-design-patterns-mcp": "dist/index.js"
+  },
+  "files": ["dist"],
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node18 --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --outfile=dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test test/catalog.test.ts test/recommend.test.ts test/conventions.test.ts",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

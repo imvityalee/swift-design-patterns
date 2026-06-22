@@ -24840,6 +24840,7 @@ function recommend(patterns2, query, limit) {
 
 // src/conventions.ts
 var CONVENTIONS_FILES = [
+  ".swift-architecture.md",
   ".claude/swift-architecture.md",
   ".claude/swift-conventions.md",
   "ARCHITECTURE.md"
@@ -24915,7 +24916,7 @@ Follow these over generic pattern defaults. Reconcile any pattern you propose wi
 function noConventionsMessage(projectDir) {
   return `No conventions file found in this project (looked for: ${CONVENTIONS_FILES.join(", ")} under ${projectDir}).
 
-Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice match this team's architecture and idioms, create one \u2014 run \`/swift-conventions init\` or save the template below to \`.claude/swift-architecture.md\`:
+Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice match this team's architecture and idioms, create one \u2014 run \`/swift-conventions init\` or save the template below to \`.swift-architecture.md\`:
 
 \`\`\`markdown
 ` + CONVENTIONS_TEMPLATE + "\n```\n";

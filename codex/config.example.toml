@@ -1,0 +1,11 @@
+# Register the swift-design-patterns MCP server with Codex (CLI + IDE).
+#
+# Easiest: run
+#   codex mcp add swift-design-patterns -- npx -y swift-design-patterns-mcp
+# which writes the block below into ~/.codex/config.toml for you.
+#
+# Or paste this block into ~/.codex/config.toml by hand:
+
+[mcp_servers.swift-design-patterns]
+command = "npx"
+args = ["-y", "swift-design-patterns-mcp"]

@@ -2,8 +2,14 @@
 // idioms, and custom patterns in a file the plugin reads and honors. This keeps
 // the shared catalog universal (GoF) while advice adapts to each codebase.
 
-/** Candidate file paths (relative to the project root), in priority order. */
+/**
+ * Candidate file paths (relative to the project root), in priority order.
+ * The harness-neutral `.swift-architecture.md` is checked first so the plugin
+ * works the same under Codex (or any tool) as under Claude Code; the `.claude/`
+ * paths are kept for back-compat with existing Claude projects.
+ */
 export const CONVENTIONS_FILES = [
+  ".swift-architecture.md",
   ".claude/swift-architecture.md",
   ".claude/swift-conventions.md",
   "ARCHITECTURE.md",
@@ -79,7 +85,7 @@ export function conventionsHeader(path: string): string {
 export function noConventionsMessage(projectDir: string): string {
   return (
     `No conventions file found in this project (looked for: ${CONVENTIONS_FILES.join(", ")} under ${projectDir}).\n\n` +
-    `Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice match this team's architecture and idioms, create one — run \`/swift-conventions init\` or save the template below to \`.claude/swift-architecture.md\`:\n\n` +
+    `Proceed with idiomatic, framework-neutral Swift defaults. To make pattern advice match this team's architecture and idioms, create one — run \`/swift-conventions init\` or save the template below to \`.swift-architecture.md\`:\n\n` +
     "```markdown\n" +
     CONVENTIONS_TEMPLATE +
     "\n```\n"
