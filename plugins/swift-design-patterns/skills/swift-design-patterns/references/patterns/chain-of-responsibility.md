@@ -132,7 +132,7 @@ let cache = CacheMiddleware(store: ["/profile": "cached-profile"])
 logging.next = auth
 auth.next = cache
 
-let result = logging.process(Request(path: "/profile", token: "abc123"))
+let result = logging.process(Request(path: "/profile", token: "YOUR_API_KEY"))
 switch result {
 case .servedFromCache(let body): print("Cache:", body)
 case .sent(let req): print("Sent:", req.path)

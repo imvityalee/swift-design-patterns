@@ -112,7 +112,7 @@ final class RequestBuilder {
 let search = RequestBuilder(path: "/v1/search")
     .query("q", "swift")
     .query("limit", "20")
-    .header("Authorization", "Bearer token123")
+    .header("Authorization", "Bearer YOUR_API_KEY")
     .build()
 
 print(search?.url?.absoluteString ?? "invalid")
