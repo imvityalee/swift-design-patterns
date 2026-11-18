@@ -101,7 +101,7 @@ class DataImporter {
     }
 
     private func validate(_ records: [Record]) -> [Record] {
-        let valid = records.filter { !$0.name.isEmpty }
+        let valid = records.filter { record in !record.name.isEmpty }
         print("Validated", valid.count, "of", records.count, "records")
         return valid
     }

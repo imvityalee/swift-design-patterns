@@ -21779,13 +21779,14 @@ var singleton = {
     code: `final class Singleton {
     static let shared = Singleton()
 
-    private(set) var value = 0
+    private var count = 0
+    var value: Int { count }
 
     // Private init blocks external instantiation.
     private init() {}
 
     func increment() {
-        value += 1
+        count += 1
     }
 }
 
@@ -22233,7 +22234,7 @@ final class Composite: Component {
     }
 
     func sum() -> Int {
-        children.reduce(0) { $0 + $1.sum() }
+        children.reduce(0) { total, child in total + child.sum() }
     }
 }
 
@@ -22283,7 +22284,7 @@ final class Directory: FileSystemNode {
     }
 
     func size() -> Int {
-        contents.reduce(0) { $0 + $1.size() }
+        contents.reduce(0) { total, item in total + item.size() }
     }
 
     func describe(indent: String) {
@@ -22740,11 +22741,12 @@ struct Tree {
 
 final class Forest {
     private let factory = TreeTypeFactory()
-    private(set) var trees: [Tree] = []
+    private var planted: [Tree] = []
+    var trees: [Tree] { planted }
 
     func plant(species: String, x: Double, y: Double, scale: Double) {
         let type = factory.type(species: species)
-        trees.append(Tree(x: x, y: y, scale: scale, type: type))
+        planted.append(Tree(x: x, y: y, scale: scale, type: type))
     }
 
     var distinctAssets: Int { factory.distinctTypes }
@@ -22854,10 +22856,11 @@ protocol ImageLoading {
 
 // RealSubject: the costly network-backed loader.
 final class RemoteImageLoader: ImageLoading {
-    private(set) var requestCount = 0
+    private var requests = 0
+    var requestCount: Int { requests }
 
     func image(for url: String) -> Data {
-        requestCount += 1
+        requests += 1
         // Pretend this performs a network download.
         return Data(("bytes:" + url).utf8)
     }
@@ -23133,9 +23136,10 @@ var command = {
 }
 
 final class Light {
-    private(set) var isOn = false
-    func turnOn() { isOn = true }
-    func turnOff() { isOn = false }
+    private var on = false
+    var isOn: Bool { on }
+    func turnOn() { on = true }
+    func turnOff() { on = false }
 }
 
 struct TurnOnCommand: Command {
@@ -23179,10 +23183,11 @@ protocol DocumentCommand {
 }
 
 final class TextDocument {
-    private(set) var text: String = ""
+    private var buffer = ""
+    var text: String { buffer }
 
-    func append(_ s: String) { text += s }
-    func removeLast(_ count: Int) { text.removeLast(min(count, text.count)) }
+    func append(_ s: String) { buffer += s }
+    func removeLast(_ count: Int) { buffer.removeLast(min(count, buffer.count)) }
 }
 
 struct AppendText: DocumentCommand {
@@ -23510,7 +23515,7 @@ struct PagedIterator: IteratorProtocol {
 let all = Array(PagedItems())
 print(all)                                  // ["a", "b", "c", "d", "e"]
 
-let uppercased = PagedItems().map { $0.uppercased() }
+let uppercased = PagedItems().map { item in item.uppercased() }
 print(uppercased)                           // ["A", "B", "C", "D", "E"]
 
 // Independent traversals do not interfere with one another.
@@ -23954,11 +23959,11 @@ final class Subject {
     }
 
     func detach(_ observer: Observer) {
-        observers.removeAll { $0 === observer }
+        observers.removeAll { existing in existing === observer }
     }
 
     private func notify() {
-        observers.forEach { $0.update(value: value) }
+        observers.forEach { observer in observer.update(value: value) }
     }
 }
 
@@ -24006,7 +24011,8 @@ protocol WeatherObserver: AnyObject {
 final class WeatherStation {
     // weak references so displays are not kept alive by the station.
     private var observers: [WeakObserver] = []
-    private(set) var latest = Reading(temperature: 0, humidity: 0)
+    private var lastReading = Reading(temperature: 0, humidity: 0)
+    var latest: Reading { lastReading }
 
     private struct WeakObserver {
         weak var value: WeatherObserver?
@@ -24017,9 +24023,9 @@ final class WeatherStation {
     }
 
     func publish(_ reading: Reading) {
-        latest = reading
-        observers.removeAll { $0.value == nil }   // prune deallocated
-        observers.forEach { $0.value?.didUpdate(reading: reading) }
+        lastReading = reading
+        observers.removeAll { entry in entry.value == nil }   // prune deallocated
+        observers.forEach { entry in entry.value?.didUpdate(reading: reading) }
     }
 }
 
@@ -24467,7 +24473,7 @@ class DataImporter {
     }
 
     private func validate(_ records: [Record]) -> [Record] {
-        let valid = records.filter { !$0.name.isEmpty }
+        let valid = records.filter { record in !record.name.isEmpty }
         print("Validated", valid.count, "of", records.count, "records")
         return valid
     }
@@ -24628,22 +24634,24 @@ struct Rectangle: Shape {
 }
 
 final class AreaVisitor: ShapeVisitor {
-    private(set) var total = 0.0
+    private var sum = 0.0
+    var total: Double { sum }
     func visit(_ circle: Circle) {
-        total += Double.pi * circle.radius * circle.radius
+        sum += Double.pi * circle.radius * circle.radius
     }
     func visit(_ rectangle: Rectangle) {
-        total += rectangle.width * rectangle.height
+        sum += rectangle.width * rectangle.height
     }
 }
 
 final class SVGExportVisitor: ShapeVisitor {
-    private(set) var markup: [String] = []
+    private var elements: [String] = []
+    var markup: [String] { elements }
     func visit(_ circle: Circle) {
-        markup.append("<circle r=\\"" + String(format: "%.0f", circle.radius) + "\\"/>")
+        elements.append("<circle r=\\"" + String(format: "%.0f", circle.radius) + "\\"/>")
     }
     func visit(_ rectangle: Rectangle) {
-        markup.append("<rect w=\\"" + String(format: "%.0f", rectangle.width)
+        elements.append("<rect w=\\"" + String(format: "%.0f", rectangle.width)
             + "\\" h=\\"" + String(format: "%.0f", rectangle.height) + "\\"/>")
     }
 }
@@ -24651,12 +24659,12 @@ final class SVGExportVisitor: ShapeVisitor {
 let document: [Shape] = [Circle(radius: 2), Rectangle(width: 3, height: 4)]
 
 let area = AreaVisitor()
-document.forEach { $0.accept(area) }
+document.forEach { shape in shape.accept(area) }
 print(String(format: "Total area: %.2f", area.total))   // Total area: 24.57
 
-let export = SVGExportVisitor()
-document.forEach { $0.accept(export) }
-print(export.markup.joined(separator: "\\n"))
+let exporter = SVGExportVisitor()
+document.forEach { shape in shape.accept(exporter) }
+print(exporter.markup.joined(separator: "\\n"))
 // <circle r="2"/>
 // <rect w="3" h="4"/>`
   },
