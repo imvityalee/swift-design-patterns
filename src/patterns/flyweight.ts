@@ -123,11 +123,12 @@ struct Tree {
 
 final class Forest {
     private let factory = TreeTypeFactory()
-    private(set) var trees: [Tree] = []
+    private var planted: [Tree] = []
+    var trees: [Tree] { planted }
 
     func plant(species: String, x: Double, y: Double, scale: Double) {
         let type = factory.type(species: species)
-        trees.append(Tree(x: x, y: y, scale: scale, type: type))
+        planted.append(Tree(x: x, y: y, scale: scale, type: type))
     }
 
     var distinctAssets: Int { factory.distinctTypes }

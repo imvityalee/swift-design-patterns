@@ -44,9 +44,10 @@ export const command: Pattern = {
 }
 
 final class Light {
-    private(set) var isOn = false
-    func turnOn() { isOn = true }
-    func turnOff() { isOn = false }
+    private var on = false
+    var isOn: Bool { on }
+    func turnOn() { on = true }
+    func turnOff() { on = false }
 }
 
 struct TurnOnCommand: Command {
@@ -91,10 +92,11 @@ protocol DocumentCommand {
 }
 
 final class TextDocument {
-    private(set) var text: String = ""
+    private var buffer = ""
+    var text: String { buffer }
 
-    func append(_ s: String) { text += s }
-    func removeLast(_ count: Int) { text.removeLast(min(count, text.count)) }
+    func append(_ s: String) { buffer += s }
+    func removeLast(_ count: Int) { buffer.removeLast(min(count, buffer.count)) }
 }
 
 struct AppendText: DocumentCommand {

@@ -81,22 +81,24 @@ struct Rectangle: Shape {
 }
 
 final class AreaVisitor: ShapeVisitor {
-    private(set) var total = 0.0
+    private var sum = 0.0
+    var total: Double { sum }
     func visit(_ circle: Circle) {
-        total += Double.pi * circle.radius * circle.radius
+        sum += Double.pi * circle.radius * circle.radius
     }
     func visit(_ rectangle: Rectangle) {
-        total += rectangle.width * rectangle.height
+        sum += rectangle.width * rectangle.height
     }
 }
 
 final class SVGExportVisitor: ShapeVisitor {
-    private(set) var markup: [String] = []
+    private var elements: [String] = []
+    var markup: [String] { elements }
     func visit(_ circle: Circle) {
-        markup.append("<circle r=\"" + String(format: "%.0f", circle.radius) + "\"/>")
+        elements.append("<circle r=\"" + String(format: "%.0f", circle.radius) + "\"/>")
     }
     func visit(_ rectangle: Rectangle) {
-        markup.append("<rect w=\"" + String(format: "%.0f", rectangle.width)
+        elements.append("<rect w=\"" + String(format: "%.0f", rectangle.width)
             + "\" h=\"" + String(format: "%.0f", rectangle.height) + "\"/>")
     }
 }
@@ -104,12 +106,12 @@ final class SVGExportVisitor: ShapeVisitor {
 let document: [Shape] = [Circle(radius: 2), Rectangle(width: 3, height: 4)]
 
 let area = AreaVisitor()
-document.forEach { $0.accept(area) }
+document.forEach { shape in shape.accept(area) }
 print(String(format: "Total area: %.2f", area.total))   // Total area: 24.57
 
-let export = SVGExportVisitor()
-document.forEach { $0.accept(export) }
-print(export.markup.joined(separator: "\n"))
+let exporter = SVGExportVisitor()
+document.forEach { shape in shape.accept(exporter) }
+print(exporter.markup.joined(separator: "\n"))
 // <circle r="2"/>
 // <rect w="3" h="4"/>
 ```

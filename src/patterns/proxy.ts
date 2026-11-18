@@ -78,10 +78,11 @@ protocol ImageLoading {
 
 // RealSubject: the costly network-backed loader.
 final class RemoteImageLoader: ImageLoading {
-    private(set) var requestCount = 0
+    private var requests = 0
+    var requestCount: Int { requests }
 
     func image(for url: String) -> Data {
-        requestCount += 1
+        requests += 1
         // Pretend this performs a network download.
         return Data(("bytes:" + url).utf8)
     }

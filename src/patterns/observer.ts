@@ -54,11 +54,11 @@ final class Subject {
     }
 
     func detach(_ observer: Observer) {
-        observers.removeAll { $0 === observer }
+        observers.removeAll { existing in existing === observer }
     }
 
     private func notify() {
-        observers.forEach { $0.update(value: value) }
+        observers.forEach { observer in observer.update(value: value) }
     }
 }
 
@@ -107,7 +107,8 @@ protocol WeatherObserver: AnyObject {
 final class WeatherStation {
     // weak references so displays are not kept alive by the station.
     private var observers: [WeakObserver] = []
-    private(set) var latest = Reading(temperature: 0, humidity: 0)
+    private var lastReading = Reading(temperature: 0, humidity: 0)
+    var latest: Reading { lastReading }
 
     private struct WeakObserver {
         weak var value: WeatherObserver?
@@ -118,9 +119,9 @@ final class WeatherStation {
     }
 
     func publish(_ reading: Reading) {
-        latest = reading
-        observers.removeAll { $0.value == nil }   // prune deallocated
-        observers.forEach { $0.value?.didUpdate(reading: reading) }
+        lastReading = reading
+        observers.removeAll { entry in entry.value == nil }   // prune deallocated
+        observers.forEach { entry in entry.value?.didUpdate(reading: reading) }
     }
 }
 

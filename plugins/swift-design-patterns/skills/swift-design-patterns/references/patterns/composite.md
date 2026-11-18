@@ -39,7 +39,7 @@ final class Composite: Component {
     }
 
     func sum() -> Int {
-        children.reduce(0) { $0 + $1.sum() }
+        children.reduce(0) { total, child in total + child.sum() }
     }
 }
 
@@ -90,7 +90,7 @@ final class Directory: FileSystemNode {
     }
 
     func size() -> Int {
-        contents.reduce(0) { $0 + $1.size() }
+        contents.reduce(0) { total, item in total + item.size() }
     }
 
     func describe(indent: String) {

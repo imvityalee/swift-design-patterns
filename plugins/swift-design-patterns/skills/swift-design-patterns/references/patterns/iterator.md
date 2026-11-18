@@ -93,7 +93,7 @@ struct PagedIterator: IteratorProtocol {
 let all = Array(PagedItems())
 print(all)                                  // ["a", "b", "c", "d", "e"]
 
-let uppercased = PagedItems().map { $0.uppercased() }
+let uppercased = PagedItems().map { item in item.uppercased() }
 print(uppercased)                           // ["A", "B", "C", "D", "E"]
 
 // Independent traversals do not interfere with one another.

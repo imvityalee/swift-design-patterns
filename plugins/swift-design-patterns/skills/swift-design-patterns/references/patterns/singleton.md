@@ -22,13 +22,14 @@ A private initializer prevents outside construction; a static let exposes the on
 final class Singleton {
     static let shared = Singleton()
 
-    private(set) var value = 0
+    private var count = 0
+    var value: Int { count }
 
     // Private init blocks external instantiation.
     private init() {}
 
     func increment() {
-        value += 1
+        count += 1
     }
 }
 
