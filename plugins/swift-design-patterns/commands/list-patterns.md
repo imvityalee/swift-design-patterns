@@ -7,10 +7,10 @@ argument-hint: "[category: Creational | Structural | Behavioral]"
 
 The user invoked `/list-patterns` with: **$ARGUMENTS**
 
-Call the `list_patterns` tool:
+Use the `swift-design-patterns` skill and read its `references/catalog.md`:
 
-- If `$ARGUMENTS` names a category (Creational, Structural, Behavioral), pass it
-  as the `category` filter.
+- If `$ARGUMENTS` names a category (Creational, Structural, Behavioral), show
+  only that category.
 - Otherwise list the whole catalog grouped by category.
 
 Present a scannable list — each pattern as name + a one-line intent. If

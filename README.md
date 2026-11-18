@@ -2,21 +2,23 @@
 
 [![CI](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/imvityalee/swift-design-patterns/actions/workflows/ci.yml)
 
-A [Claude Code](https://code.claude.com) plugin — also installable as an
+A [Claude Code](https://code.claude.com) plugin — also available as an
 [OpenAI Codex](https://github.com/openai/codex) MCP server (see
 [Use with Codex](#use-with-codex)) — that makes your coding agent fluent in the
-**23 Gang-of-Four design patterns in Swift**. It bundles:
+**23 Gang-of-Four design patterns in Swift**. It comes in two forms:
 
-- 🧰 an **MCP server** exposing the pattern catalog as tools, and
-- 🧠 a **skill** + **slash command** that auto-engage when you work on design
-  patterns in Swift.
+- 🧠 the **Claude Code plugin** (`plugins/swift-design-patterns/`): a **skill**
+  with the full catalog bundled as Markdown references, plus **slash commands**
+  — no server, scripts, or dependencies; and
+- 🧰 an **MCP server** (npm `swift-design-patterns-mcp`) exposing the same
+  catalog as tools, for Codex or any MCP client.
 
 Every pattern ships with an **idiomatic, compile-checked Swift example** (all 46
 examples type-check under the Swift 6 toolchain).
 
 ## What you get
 
-### MCP tools
+### MCP tools (MCP server only)
 
 | Tool | What it does |
 |---|---|
@@ -28,8 +30,8 @@ examples type-check under the Swift 6 toolchain).
 ### Skill & commands
 
 - The **`swift-design-patterns` skill** auto-invokes when you're choosing,
-  implementing, refactoring toward, or explaining a pattern in Swift — and it
-  drives the MCP tools for you.
+  implementing, refactoring toward, or explaining a pattern in Swift, reading
+  the bundled pattern references.
 - **`/pattern <name-or-problem>`** — quick lookup or recommendation on demand
   (`/pattern Strategy`, or `/pattern I have a giant switch selecting between behaviors`).
 - **`/recommend-pattern <problem>`** — ranked pattern suggestions for a described problem.
@@ -54,21 +56,22 @@ abstractions, whatever your team uses. See
 
 In Claude Code:
 
-Install Market place 
+Add the marketplace:
 
 ```text
 /plugin marketplace add imvityalee/swift-design-patterns
 ```
-Install Skill 
+
+Install the plugin:
 
 ```text
 /plugin install swift-design-patterns
 ```
 
 Then start using it — ask "which pattern fits …?", "show me Observer in Swift",
-or run `/pattern …`. The MCP server is bundled (single self-contained
-`dist/index.js`); you only need Node.js available, which Claude Code already
-requires.
+or run `/pattern …`. The plugin is pure Markdown, so there's nothing else to
+install. Prefer live MCP tools in Claude Code too? Register the server yourself:
+`claude mcp add swift-design-patterns -- npx -y swift-design-patterns-mcp`.
 
 ### Use it across a team
 
@@ -131,7 +134,8 @@ Mediator, Memento, Observer, State, Strategy, Template Method, Visitor
 npm install        # install dev deps (SDK, esbuild, typescript, tsx)
 npm run typecheck  # tsc --noEmit
 npm test           # unit tests: catalog integrity + recommender
-npm run build      # bundle src/ -> dist/index.js (committed, so the plugin runs without node_modules)
+npm run build      # bundle src/ -> dist/index.js (the MCP server)
+npm run build:plugin  # regenerate the Claude plugin's Markdown references from src/
 npm run smoke      # spin up the server over stdio and exercise every tool
 ```
 

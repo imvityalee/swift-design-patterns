@@ -3,18 +3,24 @@
   "owner": {
     "name": "Viktor Li"
   },
+  "description": "Claude Code plugin for the 23 GoF design patterns in idiomatic Swift.",
   "plugins": [
     {
       "name": "swift-design-patterns",
-      "source": "./",
-      "displayName": "Swift Design Patterns",
-      "description": "Catalog, idiomatic Swift examples, and recommendation tools for the 23 GoF design patterns.",
-      "version": "0.4.0",
+      "source": "./plugins/swift-design-patterns",
+      "description": "Catalog, idiomatic Swift examples, and recommendation guidance for the 23 GoF design patterns.",
+      "version": "0.5.0",
       "author": {
         "name": "Viktor Li"
       },
       "license": "MIT",
-      "keywords": ["swift", "design-patterns", "gof", "ios", "architecture"]
+      "keywords": [
+        "swift",
+        "design-patterns",
+        "gof",
+        "ios",
+        "architecture"
+      ]
     }
   ]
 }
