@@ -22,6 +22,7 @@ npm install         # dev deps
 npm run typecheck   # tsc --noEmit
 npm test            # unit tests (catalog integrity + recommender)
 npm run build       # bundle src/ -> dist/index.js  (commit the result)
+npm run build:plugin  # regenerate plugins/swift-design-patterns references (commit the result)
 npm run smoke       # exercise every MCP tool over stdio
 ```
 
